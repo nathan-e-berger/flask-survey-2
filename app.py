@@ -25,11 +25,16 @@ def show_question():
     return render_template("question.html", question=question)
 
 
-@app.post("/questions/<int:q_num>")
-def show_2nd_question():
+@app.get("/questions/<int:q_num>")
+def show_next_question(q_num):
     q_num+=1
+    question = survey.questions[q_num]
+    return render_template("question.html", question = question)
 
-    # ("/answer")
-    redirect("/questions/<int:q_num")
+@app.post("/answer")
+def save_answer():
+    response = request.form.get("answer")
+    responses.append(response)
 
-    return render_template("questions.html")
+    return redirect(f"/questions/{len(responses)}")
+
