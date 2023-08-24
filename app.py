@@ -12,11 +12,18 @@ responses = []
 
 @app.get("/")
 def show_homepage():
+    #title = survey[]
     return render_template("survey_start.html")
 
 @app.post("/begin")
 def show_question():
+    responses = []
+    #q_num = 0
+    #question = survey.questions[q_num]
+    # q_num = request.args["q_num"]
+    redirect("/questions/0")
+   # q_num+=1
 
-    question = survey.questions[0]
+    return render_template("question.html")
 
-    return render_template("question.html", question=question)
+@app.post("/questions/<int:q_num>")
