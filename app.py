@@ -12,22 +12,17 @@ responses = []
 
 @app.get("/")
 def show_homepage():
-    #title = survey[]
-    return render_template("survey_start.html")
+    survey_title = survey.title
+    return render_template("survey_start.html", survey_title=survey_title)
 
 @app.post("/begin")
 def show_question():
-    responses = []
-
-    question = survey.questions[0]
-    redirect("/questions/0")
-
-    return render_template("question.html", question=question)
+    responses.clear()
+    return redirect("/questions/0")
 
 
 @app.get("/questions/<int:q_num>")
 def show_next_question(q_num):
-    q_num+=1
     question = survey.questions[q_num]
     return render_template("question.html", question = question)
 
@@ -36,5 +31,16 @@ def save_answer():
     response = request.form.get("answer")
     responses.append(response)
 
-    return redirect(f"/questions/{len(responses)}")
+    if len(responses) == len(survey.questions):
+        return redirect("/completion")
+    else:
+        return redirect(f"/questions/{len(responses)}")
 
+@app.get("/completion")
+def show_completion():
+    questions = survey.questions
+    qa_dict = {}
+    for i in range(len(responses)):
+        qa_dict[questions[i]] = responses[i]
+
+    return render_template("completion.html", qa_dict=qa_dict)
